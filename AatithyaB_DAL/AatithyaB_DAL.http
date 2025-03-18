@@ -1,0 +1,6 @@
+@AatithyaB_DAL_HostAddress = http://localhost:5195
+
+GET {{AatithyaB_DAL_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
