@@ -1,0 +1,6 @@
+@Aatithya_HostAddress = http://localhost:5042
+
+GET {{Aatithya_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
