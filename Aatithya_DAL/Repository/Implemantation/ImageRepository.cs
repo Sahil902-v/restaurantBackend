@@ -66,7 +66,7 @@ namespace Aatithya_DAL.Repository.Implemantation
             }
             return res;
         }
-        // Get Contatc_Us By Id
+        // Get Image By Id
 
         public async Task<ResponseModel> GetImageById(int id)
         {
@@ -116,6 +116,53 @@ namespace Aatithya_DAL.Repository.Implemantation
 
         }
 
+// Get Image by categoryId
+        public async Task<ResponseModel> GetImageByCategoryId(int id)
+        {
+            // Create a new Image model
+            List<ListImages> model = new();
+
+            // Create a new response model
+            ResponseModel res = new ResponseModel();
+
+            try
+            {
+                // Retrieve the user from the database based on the provided ID
+                var result = await _context.Images.Where(u => u.ImgCategory == id).ToListAsync();
+
+                if (result != null)
+                {
+                    // Map the user entity to the Image model
+                    model = _mapper.Map<List<ListImages>>(result);
+
+                    // Prepare a successful response
+                    res.IsSuccess = true;
+                    res.Status = System.Net.HttpStatusCode.OK;
+                    res.Message = string.Format(MessageNotification.GetMessage((int)StatusId.DataFound), "Images");
+                    res.Data = model;
+                }
+                else
+                {
+                    // Prepare a response indicating that the user with the provided ID was not found
+                    res.IsSuccess = false;
+                    res.Status = System.Net.HttpStatusCode.InternalServerError;
+                    res.Message = string.Format(MessageNotification.GetMessage((int)StatusId.DataNotFound), "Images");
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError("An error occurred: {ErrorMessage}", ex.Message);
+
+                // Prepare an error response
+                res.IsSuccess = false;
+                res.Status = HttpStatusCode.InternalServerError;
+                res.Message = ex.Message;
+
+            }
+            // Return a tuple containing the response model and the Image model
+            return res;
+        }
+
         // Insert Images
         public async Task<ResponseModel> InsertImage(AddImages addImages, IFormFile files)
         {
@@ -134,7 +181,7 @@ namespace Aatithya_DAL.Repository.Implemantation
                     };
                 }
 
-                const long maxFileSize = 5 * 1024 * 1024; // 5MB
+                const long maxFileSize = 25 * 1024 * 1024; // 25MB
                 var allowedFileTypes = new[] { ".jpg", ".jpeg", ".png" };
 
                 // Validate file size
@@ -212,6 +259,7 @@ namespace Aatithya_DAL.Repository.Implemantation
                 res.IsSuccess = true;
                 res.Status = HttpStatusCode.OK;
                 res.Message = "Images uploaded successfully.";
+                res.Data = sanitizedFileName;
             }
             catch (Exception ex)
             {

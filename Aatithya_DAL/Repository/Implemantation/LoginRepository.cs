@@ -84,7 +84,8 @@ namespace Aatithya_DAL.Repository.Implemantation
         public async Task<int?> GetPermissionVersionByUserIdAsync()
         {
             var userIdClaim = _httpContextAccessor.HttpContext?.User.Claims.FirstOrDefault(c => c.Type == "UserId")?.Value;
-
+            Console.WriteLine("http Context accessor: ", _httpContextAccessor);
+            Console.WriteLine("Something?", userIdClaim);
             if (string.IsNullOrEmpty(userIdClaim) || !int.TryParse(userIdClaim, out int userId))
             {
                 throw new Exception("Invalid or missing UserId in the token.");

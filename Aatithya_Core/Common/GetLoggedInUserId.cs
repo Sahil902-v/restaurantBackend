@@ -14,14 +14,6 @@ namespace Aatithya_Core.Common
         #endregion
 
         #region Parameterized Constructor
-        /// <summary>
-        /// Initializes a new instance of the <see cref="DepartmentRepository"/> class.
-        /// </summary>
-        /// <param name="context">The application database context.</param>
-        /// <remarks>
-        /// Date: 11-04-2024
-        /// Developer: Jayshree Patel
-        /// </remarks>
         public GetLoggedInUserId(IHttpContextAccessor httpContextAccessor)
         {
             _httpContextAccessor = httpContextAccessor;
@@ -33,7 +25,7 @@ namespace Aatithya_Core.Common
         {
             var userIdClaim = _httpContextAccessor.HttpContext?.User.Claims
                 .FirstOrDefault(c => c.Type == "UserId")?.Value;
-
+            Console.WriteLine(userIdClaim);
             return int.TryParse(userIdClaim, out var userId) ? userId : null;
         }
         #endregion

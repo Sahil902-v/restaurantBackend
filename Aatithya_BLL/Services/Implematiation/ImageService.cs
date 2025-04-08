@@ -35,6 +35,12 @@ namespace Aatithya_BLL.Services.Implematiation
             return await _repository.GetImageById(id); 
         }
 
+        // Get Image By Id
+
+        public async Task<ResponseModel> GetImageByCategoryId(int id)
+        {
+            return await _repository.GetImageByCategoryId(id); 
+        }
 
         //Insert Image Method
 

@@ -111,6 +111,48 @@ namespace Aatithya.Controllers
             }
         }
 
+        // Fetch Image By Id 
+
+        [HttpGet]
+        [Route("GetImageByCategoryId/{id}")]
+
+        public async Task<IActionResult> GetImageByCategoryId(int id)
+        {
+            // Initialize a response model
+            ResponseModel res = new ResponseModel();
+
+            try
+            {
+                // Call the service to get all users
+                var response = await _service.GetImageByCategoryId(id);
+
+
+                if (response.IsSuccess)
+                {
+                    return Ok(new { Response = response });
+                }
+                if (response.Status == HttpStatusCode.NotFound)
+                {
+                    return Ok(response);
+                }
+                else
+                {
+                    // Data not found or other issues
+                    return StatusCode((int)response.Status, response);
+                }
+            }
+            catch (Exception ex)
+            {
+                // Log the error message to the database using Serilog
+                _logger.LogError("An error occurred: {ErrorMessage}", ex.Message);
+
+                // Prepare a bad request response
+                res.IsSuccess = false;
+                res.Status = HttpStatusCode.InternalServerError;
+                res.Message = ex.Message;
+                return BadRequest(res);
+            }
+        }
 
         // Insert Image 
         [HttpPost]

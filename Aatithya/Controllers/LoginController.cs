@@ -127,9 +127,8 @@ namespace Aatithya.Controllers
                 _configuration["Jwt:Issuer"],
                 _configuration["Jwt:Audience"],
                 claims, 
-                        //expires: DateTime.Now.AddMinutes(15), // Expiration time (15 minutes from now)
-                expires: DateTime.Now.AddDays(69), // Expiration time (15 minutes from now)
-                signingCredentials: credentials // Signing xredentials
+                expires: DateTime.Now.AddDays(69),
+                signingCredentials: credentials
                 );
 
             // Write the token as a string using JwtSecurityTokenHandler

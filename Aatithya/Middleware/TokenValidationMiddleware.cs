@@ -29,7 +29,8 @@ namespace Aatithya.Middleware
                 "/api/Login/LoginAuthentication",
                 "/api/Contact_Us/InsertContact_us",
                 "/api/Image/GetAllImages",
-                "/api/Image/GetImageById"
+                "/api/Image/GetImageById",
+                "/api/Image/GetImageByCategoryId"
             };
             // Skip token validation for specified paths
             if (excludedPaths.Any(path => context.Request.Path.StartsWithSegments(path, StringComparison.OrdinalIgnoreCase)))

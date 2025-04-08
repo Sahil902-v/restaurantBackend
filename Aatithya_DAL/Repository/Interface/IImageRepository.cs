@@ -10,6 +10,8 @@ namespace Aatithya_DAL.Repository.Interface
         Task<ResponseModel> GetAllImages();
         Task<ResponseModel> GetImageById(int id);
 
+        Task<ResponseModel> GetImageByCategoryId(int id);
+
         Task<ResponseModel> InsertImage(AddImages img, IFormFile file);
         Task<ResponseModel> DeleteImage(int id);
     }
