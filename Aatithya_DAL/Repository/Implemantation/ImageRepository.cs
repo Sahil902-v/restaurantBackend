@@ -285,6 +285,27 @@ namespace Aatithya_DAL.Repository.Implemantation
 
                 if (result != null)
                 {
+                    string uploadDir = result.ImgCategory switch
+                    {
+                        0 => Path.Combine(Directory.GetCurrentDirectory(), "Menu_img"),
+                        1 => Path.Combine(Directory.GetCurrentDirectory(), "Gallery_img"),
+                        2 => Path.Combine(Directory.GetCurrentDirectory(), "Banquet_img"),
+                        3 => Path.Combine(Directory.GetCurrentDirectory(), "Restaurant_img"),
+                        4 => Path.Combine(Directory.GetCurrentDirectory(), "TypesofFood_img"),
+                        _ => Path.Combine(Directory.GetCurrentDirectory(), "Uploads")
+                    };
+
+                    string filePath = Path.Combine(uploadDir, result.ImgUrl);
+                    if (File.Exists(filePath))
+                    {
+                        Console.WriteLine("Deleting: ", filePath);
+                        File.Delete(filePath);
+                    }
+                    else
+                    {
+                        Console.WriteLine("Tmp Image in db");
+                    }
+
                     //Delete Contact
                     _context.Images.Remove(result);
                     _context.SaveChanges();
