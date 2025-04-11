@@ -55,5 +55,10 @@ namespace Aatithya_BLL.Services.Implematiation
             return await _repository.DeleteImage(id);
         }
 
+        public async Task<ResponseModel> DeleteImages(int [] id)
+        {
+            return await _repository.DeleteImages(id);
+        }
+
     }
 }

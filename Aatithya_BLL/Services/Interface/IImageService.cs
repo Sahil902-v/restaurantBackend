@@ -16,5 +16,6 @@ namespace Aatithya_BLL.Services.Interface
         Task<ResponseModel> GetImageByCategoryId(int id);
         Task<ResponseModel> InsertImage(AddImages img, IFormFile file);
         Task<ResponseModel> DeleteImage(int id);
+        Task<ResponseModel> DeleteImages(int[] id);
     }
 }

@@ -14,5 +14,6 @@ namespace Aatithya_DAL.Repository.Interface
 
         Task<ResponseModel> InsertImage(AddImages img, IFormFile file);
         Task<ResponseModel> DeleteImage(int id);
+        Task<ResponseModel> DeleteImages(int[] id);
     }
 }

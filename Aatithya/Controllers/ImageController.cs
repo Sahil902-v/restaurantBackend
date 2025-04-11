@@ -228,5 +228,40 @@ namespace Aatithya.Controllers
                 return BadRequest(res);
             }
         }
+
+        [HttpDelete]
+        [Route("DeleteImages")]
+
+        public async Task<IActionResult> DeleteImages(int [] ids)
+        {
+            ResponseModel res = new ResponseModel();
+
+            try
+            {
+                // Validate input
+                if (ids == null || ids.Length == 0)
+                {
+                    _logger.LogError("Error: Image IDs are required for bulk deletion.");
+
+                    res.IsSuccess = false;
+                    res.Status = HttpStatusCode.BadRequest;
+                    res.Message = "No image IDs were provided.";
+                    return BadRequest(res);
+                }
+
+                // Call the service to delete images
+                var response = await _service.DeleteImages(ids);
+                return Ok(response);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError("An error occurred during bulk image deletion: {ErrorMessage}", ex.Message);
+
+                res.IsSuccess = false;
+                res.Status = HttpStatusCode.InternalServerError;
+                res.Message = ex.Message;
+                return StatusCode((int)HttpStatusCode.InternalServerError, res);
+            }
+        }
     }
 }

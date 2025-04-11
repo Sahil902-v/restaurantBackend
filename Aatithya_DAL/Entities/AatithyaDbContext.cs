@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using Aatithya_Core.Common;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 
@@ -8,7 +9,9 @@ namespace Aatithya_DAL.Entities;
 public partial class AatithyaDbContext : DbContext
 {
     private readonly IConfiguration _configuration;
-    public AatithyaDbContext(DbContextOptions<AatithyaDbContext> options, IConfiguration configuration) : base(options)
+    
+    public AatithyaDbContext(DbContextOptions<AatithyaDbContext> options, IConfiguration configuration)
+     : base(options)
     {
         _configuration = configuration;
     }
@@ -22,7 +25,20 @@ public partial class AatithyaDbContext : DbContext
     public virtual DbSet<WebApiLog> WebApiLogs { get; set; }
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-        => optionsBuilder.UseSqlServer("Server=localhost;User ID=sa;Password=Rudr4321@69;Database=Aatithya_DB;TrustServerCertificate=True;");
+    {
+        if (!optionsBuilder.IsConfigured)
+
+        {
+            //optionsBuilder.UseSqlServer(_configuration.GetConnectionString("MIDASConnectionString"));
+            string connectionString = _configuration.GetConnectionString("RestaurantConnectionString");
+            string key = "Aathithya@rudyyy";
+
+            AESEncryption aesEncryption = new AESEncryption(_configuration);
+            string decryptedConnectionString = aesEncryption.DecryptString(connectionString, key);
+
+            optionsBuilder.UseSqlServer(decryptedConnectionString);
+        }
+    }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -43,6 +59,9 @@ public partial class AatithyaDbContext : DbContext
         modelBuilder.Entity<Image>(entity =>
         {
             entity.Property(e => e.ImgCategory).HasColumnName("Img_Category");
+            entity.Property(e => e.ImgName)
+                .HasMaxLength(50)
+                .HasColumnName("imgName");
             entity.Property(e => e.ImgTitle)
                 .HasMaxLength(50)
                 .HasColumnName("Img_Title");
@@ -50,6 +69,9 @@ public partial class AatithyaDbContext : DbContext
                 .HasMaxLength(50)
                 .IsUnicode(false)
                 .HasColumnName("Img_url");
+            entity.Property(e => e.IsGallery).HasColumnName("isGallery");
+            entity.Property(e => e.IsMainDisp).HasColumnName("isMainDisp");
+            entity.Property(e => e.IsMenu).HasColumnName("isMenu");
         });
 
         modelBuilder.Entity<User>(entity =>

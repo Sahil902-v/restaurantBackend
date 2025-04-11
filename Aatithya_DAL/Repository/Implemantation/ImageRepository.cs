@@ -189,7 +189,7 @@ namespace Aatithya_DAL.Repository.Implemantation
                 {
                     res.IsSuccess = false;
                     res.Status = HttpStatusCode.BadRequest;
-                    res.Message = $"File '{files.FileName}' exceeds the size limit of 5 MB.";
+                    res.Message = $"File '{files.FileName}' exceeds the size limit of 25 MB.";
                     return res;
 
                 }
@@ -237,9 +237,11 @@ namespace Aatithya_DAL.Repository.Implemantation
                 {
                     ImgUrl = sanitizedFileName,
                     ImgCategory = addImages.ImgCategory,
-                    ImgTitle = addImages.ImgTitle
-                    
-                    
+                    ImgTitle = addImages.ImgTitle,
+                    ImgName = addImages.ImgName,
+                    IsGallery = addImages.IsGallery,
+                    IsMenu = addImages.IsMenu,
+                    IsMainDisp = addImages.IsMainDisp
                 });
 
                 if (!images.Any())
@@ -336,5 +338,58 @@ namespace Aatithya_DAL.Repository.Implemantation
             // Return the response model
             return res;
         }
+
+        public async Task<ResponseModel> DeleteImages(int[] ids)
+        {
+            ResponseModel res = new ResponseModel();
+            int deletedCount = 0;
+            int notFoundCount = 0;
+
+            try
+            {
+                var images = await _context.Images.Where(img => ids.Contains(img.Id)).ToListAsync();
+
+                foreach (var image in images)
+                {
+                    string uploadDir = image.ImgCategory switch
+                    {
+                        0 => Path.Combine(Directory.GetCurrentDirectory(), "Menu_img"),
+                        1 => Path.Combine(Directory.GetCurrentDirectory(), "Gallery_img"),
+                        2 => Path.Combine(Directory.GetCurrentDirectory(), "Banquet_img"),
+                        3 => Path.Combine(Directory.GetCurrentDirectory(), "Restaurant_img"),
+                        4 => Path.Combine(Directory.GetCurrentDirectory(), "TypesofFood_img"),
+                        _ => Path.Combine(Directory.GetCurrentDirectory(), "Uploads")
+                    };
+
+                    string filePath = Path.Combine(uploadDir, image.ImgUrl);
+
+                    if (File.Exists(filePath))
+                    {
+                        File.Delete(filePath);
+                    }
+
+                    _context.Images.Remove(image);
+                    deletedCount++;
+                }
+
+                await _context.SaveChangesAsync();
+
+                notFoundCount = ids.Length - deletedCount;
+
+                res.IsSuccess = true;
+                res.Status = HttpStatusCode.OK;
+                res.Message = $"Deleted {deletedCount} image(s). {notFoundCount} not found.";
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError("An error occurred while deleting images: {ErrorMessage}", ex.Message);
+
+                res.IsSuccess = false;
+                res.Status = HttpStatusCode.InternalServerError;
+                res.Message = $"An error occurred: {ex.Message}";
+            }
+            return res;
+        }
+
     }
 }
